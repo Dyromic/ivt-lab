@@ -33,6 +33,62 @@ public class GT4500Test {
   }
 
   @Test
+  public void fireTorpedo_Single_Primary_Store_Empty() {
+	  
+
+	    // Arrange
+		when(this.mockPrimaryTS.isEmpty()).thenReturn(true);
+		when(this.mockSecondaryTS.fire(1)).thenReturn(true);
+
+	    // Act
+	    boolean result = ship.fireTorpedo(FiringMode.ALL);
+	    
+	    // Assert
+	    verify(this.mockPrimaryTS, times(1)).isEmpty();
+	    verify(this.mockSecondaryTS, times(1)).fire(1);
+	    assertEquals(true, result);
+	    
+  }
+
+  @Test
+  public void fireTorpedo_Single_All_Store_Empty() {
+	  
+
+	    // Arrange
+		when(this.mockPrimaryTS.isEmpty()).thenReturn(true);
+		when(this.mockSecondaryTS.isEmpty()).thenReturn(true);
+
+	    // Act
+	    boolean result = ship.fireTorpedo(FiringMode.SINGLE);
+	    
+	    // Assert
+	    verify(this.mockPrimaryTS, times(1)).isEmpty();
+	    verify(this.mockPrimaryTS, times(0)).fire(1);
+	    verify(this.mockSecondaryTS, times(1)).isEmpty();
+	    verify(this.mockSecondaryTS, times(0)).fire(1);
+	    assertEquals(false, result);
+	    
+  }
+
+  @Test
+  public void fireTorpedo_Single_Primary_Store_Failed() {
+	  
+
+	    // Arrange
+		when(this.mockPrimaryTS.fire(1)).thenReturn(false);
+		when(this.mockSecondaryTS.fire(1)).thenReturn(true);
+
+	    // Act
+	    boolean result = ship.fireTorpedo(FiringMode.SINGLE);
+	    
+	    // Assert
+	    verify(this.mockPrimaryTS, times(1)).fire(1);
+	    verify(this.mockSecondaryTS, times(0)).fire(1);
+	    assertEquals(false, result);
+	    
+  }
+
+  @Test
   public void fireTorpedo_All_Success(){
     // Arrange
 	when(this.mockPrimaryTS.fire(1)).thenReturn(true);
@@ -49,4 +105,40 @@ public class GT4500Test {
     
   }
 
+  @Test
+  public void fireTorpedo_All_Primary_Store_Failed() {
+	  
+
+	    // Arrange
+		when(this.mockPrimaryTS.fire(1)).thenReturn(false);
+		when(this.mockSecondaryTS.fire(1)).thenReturn(true);
+
+	    // Act
+	    boolean result = ship.fireTorpedo(FiringMode.ALL);
+	    
+	    // Assert
+	    verify(this.mockPrimaryTS, times(1)).fire(1);
+	    verify(this.mockSecondaryTS, times(1)).fire(1);
+	    assertEquals(true, result);
+	    
+  }
+
+  @Test
+  public void fireTorpedo_All_Secondary_Store_Failed() {
+	  
+
+	    // Arrange
+		when(this.mockPrimaryTS.fire(1)).thenReturn(true);
+		when(this.mockSecondaryTS.fire(1)).thenReturn(false);
+
+	    // Act
+	    boolean result = ship.fireTorpedo(FiringMode.ALL);
+	    
+	    // Assert
+	    verify(this.mockPrimaryTS, times(1)).fire(1);
+	    verify(this.mockSecondaryTS, times(1)).fire(1);
+	    assertEquals(true, result);
+	    
+  }
+  
 }
